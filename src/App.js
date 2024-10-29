@@ -1,24 +1,37 @@
-import logo from './logo.svg';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
 import './App.css';
 
 function App() {
+  
+  const [items, setItems] = useState([])
+
+  useEffect(() => {
+    axios.get("https://www.themealdb.com/api/json/v1/1/filter.php?c=Seafood").then(
+      res =>{
+        setItems(res.data.meals);
+      }
+    )
+    .catch((err) =>{
+      console.log(err);
+    });
+  },[]);
+
+  const itemsList =items.map(({strMeal, strMealThumb, idMeal}) =>{
+    return(
+      <section className='card'>
+       <img src={strMealThumb} />
+       <section className='content'>
+        <p>{strMeal}</p>
+        <p>#{idMeal}</p>
+       </section>
+    </section>
+      
+    )
+  })
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <div className="items-container">{itemsList}</div>
   );
 }
 
